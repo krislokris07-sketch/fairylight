@@ -292,6 +292,7 @@
                 this.foundCount = 0;
                 this.specialFairyIndex = 2;
                 this.audioElements = [];
+                this.audioEnabled = false;
                 
                 this.init();
             }
@@ -300,6 +301,7 @@
                 this.createFairies();
                 this.createAudioElements();
                 this.setupEventListeners();
+                this.tryEnableAudio();
             }
 
             createFairies() {
@@ -339,22 +341,43 @@
                 for (let i = 1; i <= 5; i++) {
                     const audio = new Audio();
                     if (i === 3) {
-                        audio.src = 'особый_шепот.m4a';
+                        audio.src = 'особый_шепот.mp3';  // MP3
                     } else {
-                        audio.src = `шепот${i}.m4a`;
+                        audio.src = `шепот${i}.mp3`;     // MP3
                     }
                     audio.volume = 0.6;
+                    audio.preload = 'auto';
                     this.audioElements.push(audio);
                 }
             }
 
+            tryEnableAudio() {
+                // Пробуем включить звук при загрузке страницы
+                const testAudio = new Audio();
+                testAudio.src = 'шепот1.mp3';  // MP3
+                testAudio.volume = 0;
+                testAudio.play().then(() => {
+                    this.audioEnabled = true;
+                    testAudio.pause();
+                }).catch(e => {
+                    console.log('Автовоспроизведение заблокировано, ждем клика пользователя');
+                });
+            }
+
             playWhisper(index) {
+                if (!this.audioEnabled) {
+                    // Включаем звук при первом клике на фею
+                    this.audioEnabled = true;
+                }
+                
                 if (this.fairies[index].classList.contains('found')) return;
                 
                 const audio = this.audioElements[index];
                 if (audio) {
                     audio.currentTime = 0;
-                    audio.play().catch(e => console.log('Автовоспроизведение заблокировано'));
+                    audio.play().catch(e => {
+                        console.log('Ошибка воспроизведения:', e);
+                    });
                 }
             }
 
