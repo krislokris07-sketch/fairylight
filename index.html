@@ -23,13 +23,13 @@
         }
 
         .container {
-            max-width: 1000px; /* УВЕЛИЧИЛИ ШИРИНУ */
+            max-width: 1000px;
             margin: 0 auto;
             background: url('плашка.png') no-repeat center center;
             background-size: contain;
-            padding: 80px 60px; /* УВЕЛИЧИЛИ ПАДДИНГИ */
+            padding: 80px 60px;
             position: relative;
-            min-height: 800px; /* ДОБАВИЛИ МИНИМАЛЬНУЮ ВЫСОТУ */
+            min-height: 800px;
             box-shadow: none;
             border: none;
             border-radius: 0;
@@ -62,13 +62,13 @@
 
         .forest {
             position: relative;
-            height: 400px; /* УМЕНЬШИЛИ ВЫСОТУ ОБЛАСТИ С ФЕЯМИ */
+            height: 400px;
             background: url('фон_основной.jpg') center/cover;
             border-radius: 15px;
             margin: 30px 0;
             border: 3px solid #bde0b5;
             overflow: hidden;
-            max-width: 800px; /* ОГРАНИЧИЛИ ШИРИНУ */
+            max-width: 800px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -271,7 +271,6 @@
         </div>
 
         <div class="controls">
-            <button id="hintBtn">💡 Подсказка</button>
             <button id="restartBtn" class="restart-button">🔄 Начать заново</button>
         </div>
     </div>
@@ -341,9 +340,9 @@
                 for (let i = 1; i <= 5; i++) {
                     const audio = new Audio();
                     if (i === 3) {
-                        audio.src = 'особый_шепот.mp3';  // MP3
+                        audio.src = 'особый_шепот.mp3';
                     } else {
-                        audio.src = `шепот${i}.mp3`;     // MP3
+                        audio.src = `шепот${i}.mp3`;
                     }
                     audio.volume = 0.6;
                     audio.preload = 'auto';
@@ -354,7 +353,7 @@
             tryEnableAudio() {
                 // Пробуем включить звук при загрузке страницы
                 const testAudio = new Audio();
-                testAudio.src = 'шепот1.mp3';  // MP3
+                testAudio.src = 'шепот1.mp3';
                 testAudio.volume = 0;
                 testAudio.play().then(() => {
                     this.audioEnabled = true;
@@ -411,10 +410,6 @@
             }
 
             setupEventListeners() {
-                document.getElementById('hintBtn').addEventListener('click', () => {
-                    this.giveHint();
-                });
-
                 document.getElementById('restartBtn').addEventListener('click', () => {
                     this.restartGame();
                 });
@@ -429,23 +424,6 @@
                         modal.style.display = 'none';
                     }
                 });
-            }
-
-            giveHint() {
-                for (let i = 0; i < this.fairies.length; i++) {
-                    if (!this.fairies[i].classList.contains('found')) {
-                        this.fairies[i].style.filter = 'drop-shadow(0 0 20px gold)';
-                        this.fairies[i].style.animation = 'float 1s infinite ease-in-out';
-                        
-                        setTimeout(() => {
-                            if (!this.fairies[i].classList.contains('found')) {
-                                this.fairies[i].style.filter = 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))';
-                                this.fairies[i].style.animation = 'float 4s infinite ease-in-out';
-                            }
-                        }, 2000);
-                        break;
-                    }
-                }
             }
         }
 
