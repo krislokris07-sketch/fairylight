@@ -23,13 +23,13 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1000px; /* УВЕЛИЧИЛИ ШИРИНУ */
             margin: 0 auto;
             background: url('плашка.png') no-repeat center center;
             background-size: contain;
-            padding: 80px 60px;
+            padding: 80px 60px; /* УВЕЛИЧИЛИ ПАДДИНГИ */
             position: relative;
-            min-height: 800px;
+            min-height: 800px; /* ДОБАВИЛИ МИНИМАЛЬНУЮ ВЫСОТУ */
             box-shadow: none;
             border: none;
             border-radius: 0;
@@ -62,13 +62,13 @@
 
         .forest {
             position: relative;
-            height: 400px;
+            height: 400px; /* УМЕНЬШИЛИ ВЫСОТУ ОБЛАСТИ С ФЕЯМИ */
             background: url('фон_основной.jpg') center/cover;
             border-radius: 15px;
             margin: 30px 0;
             border: 3px solid #bde0b5;
             overflow: hidden;
-            max-width: 800px;
+            max-width: 800px; /* ОГРАНИЧИЛИ ШИРИНУ */
             margin-left: auto;
             margin-right: auto;
         }
@@ -292,7 +292,6 @@
                 this.foundCount = 0;
                 this.specialFairyIndex = 2;
                 this.audioElements = [];
-                this.audioEnabled = false;
                 
                 this.init();
             }
@@ -301,7 +300,6 @@
                 this.createFairies();
                 this.createAudioElements();
                 this.setupEventListeners();
-                this.tryEnableAudio();
             }
 
             createFairies() {
@@ -341,43 +339,22 @@
                 for (let i = 1; i <= 5; i++) {
                     const audio = new Audio();
                     if (i === 3) {
-                        audio.src = 'особый_шепот.mp3';  // MP3 вместо M4A
+                        audio.src = 'особый_шепот.m4a';
                     } else {
-                        audio.src = `шепот${i}.mp3`;     // MP3 вместо M4A
+                        audio.src = `шепот${i}.m4a`;
                     }
                     audio.volume = 0.6;
-                    audio.preload = 'auto';
                     this.audioElements.push(audio);
                 }
             }
 
-            tryEnableAudio() {
-                // Пробуем включить звук при загрузке страницы
-                const testAudio = new Audio();
-                testAudio.src = 'шепот1.mp3';  // MP3 вместо M4A
-                testAudio.volume = 0;
-                testAudio.play().then(() => {
-                    this.audioEnabled = true;
-                    testAudio.pause();
-                }).catch(e => {
-                    console.log('Автовоспроизведение заблокировано, ждем клика пользователя');
-                });
-            }
-
             playWhisper(index) {
-                if (!this.audioEnabled) {
-                    // Включаем звук при первом клике на фею
-                    this.audioEnabled = true;
-                }
-                
                 if (this.fairies[index].classList.contains('found')) return;
                 
                 const audio = this.audioElements[index];
                 if (audio) {
                     audio.currentTime = 0;
-                    audio.play().catch(e => {
-                        console.log('Ошибка воспроизведения:', e);
-                    });
+                    audio.play().catch(e => console.log('Автовоспроизведение заблокировано'));
                 }
             }
 
