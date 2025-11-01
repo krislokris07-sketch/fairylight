@@ -145,6 +145,14 @@
             background: linear-gradient(135deg, #ff7b7b, #ff6b6b);
         }
 
+        .music-button {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .music-button:hover {
+            background: linear-gradient(135deg, #a569bd, #9b59b6);
+        }
+
         /* Модальное окно */
         .modal {
             display: none;
@@ -271,6 +279,7 @@
         </div>
 
         <div class="controls">
+            <button id="musicBtn" class="music-button">🎵 Включить музыку</button>
             <button id="restartBtn" class="restart-button">🔄 Начать заново</button>
         </div>
     </div>
@@ -292,6 +301,8 @@
                 this.specialFairyIndex = 2;
                 this.audioElements = [];
                 this.audioEnabled = false;
+                this.backgroundMusic = null;
+                this.isMusicPlaying = false;
                 
                 this.init();
             }
@@ -299,6 +310,7 @@
             init() {
                 this.createFairies();
                 this.createAudioElements();
+                this.createBackgroundMusic();
                 this.setupEventListeners();
                 this.tryEnableAudio();
             }
@@ -350,8 +362,14 @@
                 }
             }
 
+            createBackgroundMusic() {
+                this.backgroundMusic = new Audio('фоновая_музыка.mp3');
+                this.backgroundMusic.loop = true;
+                this.backgroundMusic.volume = 0.3;
+                this.backgroundMusic.preload = 'auto';
+            }
+
             tryEnableAudio() {
-                // Пробуем включить звук при загрузке страницы
                 const testAudio = new Audio();
                 testAudio.src = 'шепот1.mp3';
                 testAudio.volume = 0;
@@ -363,9 +381,26 @@
                 });
             }
 
+            toggleMusic() {
+                if (!this.audioEnabled) {
+                    this.audioEnabled = true;
+                }
+
+                if (this.isMusicPlaying) {
+                    this.backgroundMusic.pause();
+                    this.isMusicPlaying = false;
+                    document.getElementById('musicBtn').textContent = '🎵 Включить музыку';
+                } else {
+                    this.backgroundMusic.play().catch(e => {
+                        console.log('Ошибка воспроизведения музыки:', e);
+                    });
+                    this.isMusicPlaying = true;
+                    document.getElementById('musicBtn').textContent = '🔇 Выключить музыку';
+                }
+            }
+
             playWhisper(index) {
                 if (!this.audioEnabled) {
-                    // Включаем звук при первом клике на фею
                     this.audioEnabled = true;
                 }
                 
@@ -410,6 +445,10 @@
             }
 
             setupEventListeners() {
+                document.getElementById('musicBtn').addEventListener('click', () => {
+                    this.toggleMusic();
+                });
+
                 document.getElementById('restartBtn').addEventListener('click', () => {
                     this.restartGame();
                 });
