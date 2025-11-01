@@ -131,6 +131,14 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
         }
 
+        .restart-button {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        }
+
+        .restart-button:hover {
+            background: linear-gradient(135deg, #ff7b7b, #ff6b6b);
+        }
+
         /* Модальное окно */
         .modal {
             display: none;
@@ -268,7 +276,10 @@
             <!-- Феи появятся здесь -->
         </div>
 
-        <button id="hintBtn">💡 Подсказка</button>
+        <div class="controls">
+            <button id="hintBtn">💡 Подсказка</button>
+            <button id="restartBtn" class="restart-button">🔄 Начать заново</button>
+        </div>
     </div>
 
     <!-- Модальное окно -->
@@ -287,7 +298,7 @@
             constructor() {
                 this.fairies = [];
                 this.foundCount = 0;
-                this.specialFairyIndex = 2; // Какая фея специальная (третья по счету)
+                this.specialFairyIndex = 2;
                 this.audioElements = [];
                 
                 this.init();
@@ -297,19 +308,19 @@
                 this.createFairies();
                 this.createAudioElements();
                 this.setupEventListeners();
-                this.loadProgress();
+                // УБРАЛИ ЗАГРУЗКУ ПРОГРЕССА - всегда начинаем заново
             }
 
             createFairies() {
                 const forest = document.getElementById('forest');
+                forest.innerHTML = ''; // Очищаем перед созданием новых фей
                 
-                // Позиции для вертикальных фей - размещаем их красиво по всему лесу
                 const positions = [
-                    { top: '10%', left: '15%' },    // Фея 1 - слева вверху
-                    { top: '60%', left: '10%' },    // Фея 2 - слева внизу  
-                    { top: '30%', left: '45%' },    // Фея 3 (специальная) - по центру
-                    { top: '70%', left: '65%' },    // Фея 4 - справа внизу
-                    { top: '15%', left: '80%' }     // Фея 5 - справа вверху
+                    { top: '10%', left: '15%' },
+                    { top: '60%', left: '10%' },  
+                    { top: '30%', left: '45%' },
+                    { top: '70%', left: '65%' },
+                    { top: '15%', left: '80%' }
                 ];
 
                 positions.forEach((pos, i) => {
@@ -320,10 +331,8 @@
                     fairy.style.backgroundImage = `url('фея${i + 1}.png')`;
                     fairy.dataset.index = i;
                     
-                    // Разная задержка анимации для каждой феи
                     fairy.style.animationDelay = `${i * 0.7}s`;
                     
-                    // ШЕПОТ ТОЛЬКО ПРИ КЛИКЕ
                     fairy.addEventListener('click', () => {
                         this.playWhisper(i);
                         this.findFairy(i);
@@ -335,11 +344,11 @@
             }
 
             createAudioElements() {
-                // Создаем аудио элементы для каждой феи
+                this.audioElements = []; // Очищаем старые аудио
                 for (let i = 1; i <= 5; i++) {
                     const audio = new Audio();
                     if (i === 3) {
-                        audio.src = 'особый_шепот.m4a'; // Для специальной феи
+                        audio.src = 'особый_шепот.m4a';
                     } else {
                         audio.src = `шепот${i}.m4a`;
                     }
@@ -366,12 +375,9 @@
                 
                 this.updateProgress();
                 
-                // Если нашли специальную фею
                 if (index === this.specialFairyIndex) {
                     setTimeout(() => this.showSpecialMessage(), 800);
                 }
-                
-                this.saveProgress();
             }
 
             updateProgress() {
@@ -382,10 +388,32 @@
                 document.getElementById('modal').style.display = 'block';
             }
 
+            restartGame() {
+                // Сбрасываем состояние
+                this.foundCount = 0;
+                this.fairies = [];
+                
+                // Обновляем интерфейс
+                this.updateProgress();
+                
+                // Пересоздаем фей
+                this.createFairies();
+                
+                // Закрываем модальное окно если открыто
+                document.getElementById('modal').style.display = 'none';
+                
+                console.log('Игра перезапущена!');
+            }
+
             setupEventListeners() {
                 // Кнопка подсказки
                 document.getElementById('hintBtn').addEventListener('click', () => {
                     this.giveHint();
+                });
+
+                // Кнопка перезапуска
+                document.getElementById('restartBtn').addEventListener('click', () => {
+                    this.restartGame();
                 });
 
                 // Закрытие модального окна
@@ -403,14 +431,11 @@
             }
 
             giveHint() {
-                // Находим первую не найденную фею и делаем ее более заметной
                 for (let i = 0; i < this.fairies.length; i++) {
                     if (!this.fairies[i].classList.contains('found')) {
-                        // Временно усиливаем свечение
                         this.fairies[i].style.filter = 'drop-shadow(0 0 20px gold)';
                         this.fairies[i].style.animation = 'float 1s infinite ease-in-out';
                         
-                        // Возвращаем обратно через 2 секунды
                         setTimeout(() => {
                             if (!this.fairies[i].classList.contains('found')) {
                                 this.fairies[i].style.filter = 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))';
@@ -421,49 +446,9 @@
                     }
                 }
             }
-
-            saveProgress() {
-                const progress = {
-                    foundCount: this.foundCount,
-                    foundFairies: [],
-                    timestamp: Date.now()
-                };
-                
-                // Сохраняем какие именно феи найдены
-                this.fairies.forEach((fairy, index) => {
-                    if (fairy.classList.contains('found')) {
-                        progress.foundFairies.push(index);
-                    }
-                });
-                
-                localStorage.setItem('fairyQuestProgress', JSON.stringify(progress));
-            }
-
-            loadProgress() {
-                const saved = localStorage.getItem('fairyQuestProgress');
-                if (saved) {
-                    try {
-                        const progress = JSON.parse(saved);
-                        this.foundCount = progress.foundCount || 0;
-                        
-                        // Восстанавливаем найденные феи
-                        if (progress.foundFairies) {
-                            progress.foundFairies.forEach(index => {
-                                if (this.fairies[index]) {
-                                    this.fairies[index].classList.add('found');
-                                }
-                            });
-                        }
-                        
-                        this.updateProgress();
-                    } catch (e) {
-                        console.log('Ошибка загрузки прогресса');
-                    }
-                }
-            }
         }
 
-        // Запускаем игру когда страница загружена
+        // Запускаем игру когда страница загружена - ВСЕГДА С НОВОЙ ИГРОЙ
         document.addEventListener('DOMContentLoaded', () => {
             new FairyGame();
         });
