@@ -69,8 +69,8 @@
 
         .fairy {
             position: absolute;
-            width: 80px;  /* УВЕЛИЧЕНО с 60px */
-            height: 120px; /* УВЕЛИЧЕНО с 90px */
+            width: 80px;
+            height: 120px;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -206,8 +206,8 @@
             }
             
             .fairy {
-                width: 70px;  /* УВЕЛИЧЕНО с 50px */
-                height: 105px; /* УВЕЛИЧЕНО с 75px */
+                width: 70px;
+                height: 105px;
             }
             
             .modal-content {
@@ -231,8 +231,8 @@
             }
             
             .fairy {
-                width: 60px;  /* УВЕЛИЧЕНО с 40px */
-                height: 90px;  /* УВЕЛИЧЕНО с 60px */
+                width: 60px;
+                height: 90px;
             }
             
             button {
@@ -258,7 +258,7 @@
 <body>
     <div class="container">
         <h1>Тайна Шёпота Фей</h1>
-        <p class="subtitle">Найди фею, что знает тайну молочного зуба... Наводи курсор на фей, чтобы услышать их шёпот, и кликай, чтобы найти ту единственную</p>
+        <p class="subtitle">Найди фею, что знает тайну молочного зуба... Кликай на фей, чтобы услышать их шёпот и найти ту единственную</p>
         
         <div class="progress">
             Найдено фей: <span id="foundCount">0</span>/5
@@ -323,8 +323,11 @@
                     // Разная задержка анимации для каждой феи
                     fairy.style.animationDelay = `${i * 0.7}s`;
                     
-                    fairy.addEventListener('click', () => this.findFairy(i));
-                    fairy.addEventListener('mouseenter', () => this.playWhisper(i));
+                    // ШЕПОТ ТОЛЬКО ПРИ КЛИКЕ
+                    fairy.addEventListener('click', () => {
+                        this.playWhisper(i);
+                        this.findFairy(i);
+                    });
                     
                     forest.appendChild(fairy);
                     this.fairies.push(fairy);
@@ -360,9 +363,6 @@
 
                 this.fairies[index].classList.add('found');
                 this.foundCount++;
-                
-                // Воспроизводим аудио при нахождении
-                this.playWhisper(index);
                 
                 this.updateProgress();
                 
