@@ -69,8 +69,8 @@
 
         .fairy {
             position: absolute;
-            width: 60px;
-            height: 90px;
+            width: 80px;  /* УВЕЛИЧЕНО с 60px */
+            height: 120px; /* УВЕЛИЧЕНО с 90px */
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -151,21 +151,23 @@
             transform: translate(-50%, -50%);
             background: url('плашка.png') no-repeat center center;
             background-size: contain;
-            padding: 80px 50px 50px 50px;
-            border-radius: 20px;
-            max-width: 600px;
-            width: 90%;
-            min-height: 400px;
+            width: 600px;
+            height: 400px;
             color: #2d5a2d;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .modal-text {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             padding: 30px;
             border-radius: 15px;
-            margin-top: 20px;
+            margin: 20px;
             border: 2px solid #bde0b5;
+            max-width: 80%;
         }
 
         .modal-text h2 {
@@ -204,16 +206,18 @@
             }
             
             .fairy {
-                width: 50px;
-                height: 75px;
+                width: 70px;  /* УВЕЛИЧЕНО с 50px */
+                height: 105px; /* УВЕЛИЧЕНО с 75px */
             }
             
             .modal-content {
-                padding: 60px 30px 30px 30px;
+                width: 500px;
+                height: 350px;
             }
             
             .modal-text {
                 padding: 20px;
+                max-width: 85%;
             }
         }
 
@@ -227,8 +231,8 @@
             }
             
             .fairy {
-                width: 40px;
-                height: 60px;
+                width: 60px;  /* УВЕЛИЧЕНО с 40px */
+                height: 90px;  /* УВЕЛИЧЕНО с 60px */
             }
             
             button {
@@ -237,7 +241,8 @@
             }
             
             .modal-content {
-                padding: 50px 20px 20px 20px;
+                width: 350px;
+                height: 250px;
             }
             
             .modal-text h2 {
