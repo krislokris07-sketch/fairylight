@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тайна Шёпота Фей</title>
+    <link href="https://fonts.googleapis.com/css2?family=Underdog&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: url('фон_основной.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            text-align: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid rgba(189, 224, 181, 0.3);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+
+        h1 {
+            font-family: 'Underdog', cursive;
+            color: #bde0b5;
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(189, 224, 181, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .progress {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 25px 0;
+            font-size: 1.2em;
+            border: 1px solid rgba(189, 224, 181, 0.2);
+        }
+
+        .forest {
+            position: relative;
+            height: 600px;
+            background: url('фон_основной.jpg') center/cover;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 3px solid #bde0b5;
+            overflow: hidden;
+        }
+
+        .fairy {
+            position: absolute;
+            width: 60px;
+            height: 90px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: float 4s infinite ease-in-out;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+        }
+
+        .fairy:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.9));
+        }
+
+        .fairy.found {
+            opacity: 0.4;
+            cursor: default;
+            animation: none;
+        }
+
+        .fairy.found:hover {
+            transform: none;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+            }
+            25% { 
+                transform: translateY(-15px) rotate(1deg); 
+            }
+            50% { 
+                transform: translateY(-20px) rotate(0deg); 
+            }
+            75% { 
+                transform: translateY(-10px) rotate(-1deg); 
+            }
+        }
+
+        button {
+            background: linear-gradient(135deg, #bde0b5, #8fbc8f);
+            color: #1a2f1a;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-family: 'Underdog', cursive;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #c8e8c0, #9fcc9f);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: url('плашка.png') no-repeat center center;
+            background-size: contain;
+            padding: 80px 50px 50px 50px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            min-height: 400px;
+            color: #2d5a2d;
+            text-align: center;
+        }
+
+        .modal-text {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 2px solid #bde0b5;
+        }
+
+        .modal-text h2 {
+            color: #2d5a2d;
+            margin-bottom: 20px;
+            font-family: 'Underdog', cursive;
+            font-size: 2em;
+        }
+
+        .modal-text p {
+            font-size: 1.3em;
+            line-height: 1.6;
+            color: #1a2f1a;
+            margin-bottom: 20px;
+        }
+
+        #closeModal {
+            margin-top: 10px;
+            background: linear-gradient(135deg, #2d5a2d, #1a2f1a);
+            color: white;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2.2em;
+            }
+            
+            .forest {
+                height: 500px;
+            }
+            
+            .fairy {
+                width: 50px;
+                height: 75px;
+            }
+            
+            .modal-content {
+                padding: 60px 30px 30px 30px;
+            }
+            
+            .modal-text {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .forest {
+                height: 400px;
+            }
+            
+            .fairy {
+                width: 40px;
+                height: 60px;
+            }
+            
+            button {
+                padding: 12px 25px;
+                font-size: 1.1em;
+            }
+            
+            .modal-content {
+                padding: 50px 20px 20px 20px;
+            }
+            
+            .modal-text h2 {
+                font-size: 1.6em;
+            }
+            
+            .modal-text p {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Тайна Шёпота Фей</h1>
+        <p class="subtitle">Найди фею, что знает тайну молочного зуба... Наводи курсор на фей, чтобы услышать их шёпот, и кликай, чтобы найти ту единственную</p>
+        
+        <div class="progress">
+            Найдено фей: <span id="foundCount">0</span>/5
+        </div>
+
+        <div class="forest" id="forest">
+            <!-- Феи появятся здесь -->
+        </div>
+
+        <button id="hintBtn">💡 Подсказка</button>
+    </div>
+
+    <!-- Модальное окно -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-text">
+                <h2>🎉 Ты нашёл её!</h2>
+                <p>"Молочный зуб того крохи спрятан там, где рождаются самые смелые сны... Ищи его в замке из подушки, под охраной храброго плюшевого льва."</p>
+                <button id="closeModal">Вернуться к феям</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class FairyGame {
+            constructor() {
+                this.fairies = [];
+                this.foundCount = 0;
+                this.specialFairyIndex = 2; // Какая фея специальная (третья по счету)
+                this.audioElements = [];
+                
+                this.init();
+            }
+
+            init() {
+                this.createFairies();
+                this.createAudioElements();
+                this.setupEventListeners();
+                this.loadProgress();
+            }
+
+            createFairies() {
+                const forest = document.getElementById('forest');
+                
+                // Позиции для вертикальных фей - размещаем их красиво по всему лесу
+                const positions = [
+                    { top: '10%', left: '15%' },    // Фея 1 - слева вверху
+                    { top: '60%', left: '10%' },    // Фея 2 - слева внизу  
+                    { top: '30%', left: '45%' },    // Фея 3 (специальная) - по центру
+                    { top: '70%', left: '65%' },    // Фея 4 - справа внизу
+                    { top: '15%', left: '80%' }     // Фея 5 - справа вверху
+                ];
+
+                positions.forEach((pos, i) => {
+                    const fairy = document.createElement('div');
+                    fairy.className = 'fairy';
+                    fairy.style.top = pos.top;
+                    fairy.style.left = pos.left;
+                    fairy.style.backgroundImage = `url('фея${i + 1}.png')`;
+                    fairy.dataset.index = i;
+                    
+                    // Разная задержка анимации для каждой феи
+                    fairy.style.animationDelay = `${i * 0.7}s`;
+                    
+                    fairy.addEventListener('click', () => this.findFairy(i));
+                    fairy.addEventListener('mouseenter', () => this.playWhisper(i));
+                    
+                    forest.appendChild(fairy);
+                    this.fairies.push(fairy);
+                });
+            }
+
+            createAudioElements() {
+                // Создаем аудио элементы для каждой феи
+                for (let i = 1; i <= 5; i++) {
+                    const audio = new Audio();
+                    if (i === 3) {
+                        audio.src = 'особый_шепот.m4a'; // Для специальной феи
+                    } else {
+                        audio.src = `шепот${i}.m4a`;
+                    }
+                    audio.volume = 0.6;
+                    this.audioElements.push(audio);
+                }
+            }
+
+            playWhisper(index) {
+                if (this.fairies[index].classList.contains('found')) return;
+                
+                const audio = this.audioElements[index];
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(e => console.log('Автовоспроизведение заблокировано'));
+                }
+            }
+
+            findFairy(index) {
+                if (this.fairies[index].classList.contains('found')) return;
+
+                this.fairies[index].classList.add('found');
+                this.foundCount++;
+                
+                // Воспроизводим аудио при нахождении
+                this.playWhisper(index);
+                
+                this.updateProgress();
+                
+                // Если нашли специальную фею
+                if (index === this.specialFairyIndex) {
+                    setTimeout(() => this.showSpecialMessage(), 800);
+                }
+                
+                this.saveProgress();
+            }
+
+            updateProgress() {
+                document.getElementById('foundCount').textContent = this.foundCount;
+            }
+
+            showSpecialMessage() {
+                document.getElementById('modal').style.display = 'block';
+            }
+
+            setupEventListeners() {
+                // Кнопка подсказки
+                document.getElementById('hintBtn').addEventListener('click', () => {
+                    this.giveHint();
+                });
+
+                // Закрытие модального окна
+                document.getElementById('closeModal').addEventListener('click', () => {
+                    document.getElementById('modal').style.display = 'none';
+                });
+
+                // Закрытие модального окна по клику вне его
+                window.addEventListener('click', (event) => {
+                    const modal = document.getElementById('modal');
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+
+            giveHint() {
+                // Находим первую не найденную фею и делаем ее более заметной
+                for (let i = 0; i < this.fairies.length; i++) {
+                    if (!this.fairies[i].classList.contains('found')) {
+                        // Временно усиливаем свечение
+                        this.fairies[i].style.filter = 'drop-shadow(0 0 20px gold)';
+                        this.fairies[i].style.animation = 'float 1s infinite ease-in-out';
+                        
+                        // Возвращаем обратно через 2 секунды
+                        setTimeout(() => {
+                            if (!this.fairies[i].classList.contains('found')) {
+                                this.fairies[i].style.filter = 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))';
+                                this.fairies[i].style.animation = 'float 4s infinite ease-in-out';
+                            }
+                        }, 2000);
+                        break;
+                    }
+                }
+            }
+
+            saveProgress() {
+                const progress = {
+                    foundCount: this.foundCount,
+                    foundFairies: [],
+                    timestamp: Date.now()
+                };
+                
+                // Сохраняем какие именно феи найдены
+                this.fairies.forEach((fairy, index) => {
+                    if (fairy.classList.contains('found')) {
+                        progress.foundFairies.push(index);
+                    }
+                });
+                
+                localStorage.setItem('fairyQuestProgress', JSON.stringify(progress));
+            }
+
+            loadProgress() {
+                const saved = localStorage.getItem('fairyQuestProgress');
+                if (saved) {
+                    try {
+                        const progress = JSON.parse(saved);
+                        this.foundCount = progress.foundCount || 0;
+                        
+                        // Восстанавливаем найденные феи
+                        if (progress.foundFairies) {
+                            progress.foundFairies.forEach(index => {
+                                if (this.fairies[index]) {
+                                    this.fairies[index].classList.add('found');
+                                }
+                            });
+                        }
+                        
+                        this.updateProgress();
+                    } catch (e) {
+                        console.log('Ошибка загрузки прогресса');
+                    }
+                }
+            }
+        }
+
+        // Запускаем игру когда страница загружена
+        document.addEventListener('DOMContentLoaded', () => {
+            new FairyGame();
+        });
+    </script>
+</body>
+</html>
